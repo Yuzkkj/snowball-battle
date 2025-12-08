@@ -1,0 +1,18 @@
+[package]
+name = "yuz/snowball-battle"
+version = "0.1.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[dependencies]
+Cmdr = "evaera/cmdr@1.12.0"
+Promise = "evaera/promise@4.0.0"
+Trove = "sleitnick/trove@1.8.0"
+Signal = "stravant/goodsignal@0.3.1"
+Packet = "sjdinsd/packet@0.1.91"
+Replica = "ivasmigins/replica@0.1.0"
+EasyVisuals = "arxkdev/ezvisualz@0.0.6"
+ZonePlus = "mattschrubb/zoneplus@3.2.0"
+
+[server-dependencies]
+ProfileStore = "lm-loleris/profilestore@1.0.3"
