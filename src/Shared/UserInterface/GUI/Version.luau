@@ -13,7 +13,7 @@ function module.Start()
 
 	task.spawn(function()
 		while true do
-			local newVersion = MarketplaceService:GetProductInfo(game.PlaceId).Updated
+			local newVersion = MarketplaceService:GetProductInfoAsync(game.PlaceId).Updated
 			if newVersion ~= gameInfo.Updated then
 				versionText.TextColor3 = Color3.fromRGB(255, 0, 0)
 			end
