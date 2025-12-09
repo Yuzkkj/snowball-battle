@@ -57,7 +57,6 @@ function PlayerDataService.Start(self: PlayerDataService): ()
 		end
 
 		self._profiles[player] = playerProfile
-		print(`Profile loaded for player: {player.Name}`)
 
 		local playerReplica = Replica.New({
 			Token = utils.Token,
@@ -271,7 +270,12 @@ function PlayerDataService.GetValueRemovedSignal(
 	end
 end
 
-function PlayerDataService.Increment(self: PlayerDataService, player: Player, path: CustomTypes.Path, increment: number): ()
+function PlayerDataService.Increment(
+	self: PlayerDataService,
+	player: Player,
+	path: CustomTypes.Path,
+	increment: number
+): ()
 	local oldValue = self:Get(player, path)
 	local newValue = oldValue + increment
 
