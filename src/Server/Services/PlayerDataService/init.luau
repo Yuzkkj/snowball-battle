@@ -8,6 +8,9 @@ local ProfileStore = require(ServerScriptService.ServerPackages.ProfileStore)
 local Replica = require(ReplicatedStorage.Packages.Replica)
 local Signal = require(ReplicatedStorage.Packages.Signal)
 
+local CustomTypes = require(ReplicatedStorage.Modules.Core.CustomTypes)
+local getContainer = require(ReplicatedStorage.Modules.Plataform.GetContainer)
+
 local utils = require(script.Utils)
 
 local DATA_STORE_KEY = (RunService:IsStudio() and "PlayerStore_Test") or "PlayerStore"
@@ -116,14 +119,14 @@ function PlayerDataService.GetProfile(self: PlayerDataService, player: Player): 
 	return playerProfile
 end
 
-function PlayerDataService.Get(self: PlayerDataService, player: Player, path: utils.Path): any
+function PlayerDataService.Get(self: PlayerDataService, player: Player, path: CustomTypes.Path): any
 	local playerProfile = self:GetProfile(player)
 
 	local length = #path
 	local last = path[length]
 	local value
 
-	local container = utils.getContainer(playerProfile.Data, path)
+	local container = getContainer(playerProfile.Data, path)
 	value = container[last]
 
 	if not value then
@@ -133,7 +136,7 @@ function PlayerDataService.Get(self: PlayerDataService, player: Player, path: ut
 	return value
 end
 
-function PlayerDataService.Set(self: PlayerDataService, player: Player, path: utils.Path, value: any): ()
+function PlayerDataService.Set(self: PlayerDataService, player: Player, path: CustomTypes.Path, value: any): ()
 	local concatedPath = table.concat(path, "/")
 
 	local oldValue = self:Get(player, path)
@@ -146,7 +149,7 @@ function PlayerDataService.Set(self: PlayerDataService, player: Player, path: ut
 	local length = #path
 	local last = path[length]
 
-	local container = utils.getContainer(playerProfile.Data, path)
+	local container = getContainer(playerProfile.Data, path)
 	if not container[last] then
 		error(`No index "{last}" in path "{concatedPath}"`)
 	end
@@ -165,7 +168,7 @@ end
 function PlayerDataService.GetValueChangedSignal(
 	self: PlayerDataService,
 	player: Player,
-	path: utils.Path
+	path: CustomTypes.Path
 ): Signal.Signal<any, any>
 	local concatedPath = table.concat(path, "/")
 
@@ -184,13 +187,13 @@ end
 function PlayerDataService.Insert(
 	self: PlayerDataService,
 	player: Player,
-	path: utils.Path,
+	path: CustomTypes.Path,
 	value: any,
 	index: string | number?
 ): ()
 	local playerProfile = self:GetProfile(player)
 
-	local container = utils.getContainer(playerProfile.Data, path)
+	local container = getContainer(playerProfile.Data, path)
 
 	local playerReplica = self._replicas[player]
 
@@ -212,7 +215,7 @@ end
 function PlayerDataService.GetValueInsertedSignal(
 	self: PlayerDataService,
 	player: Player,
-	path: utils.Path
+	path: CustomTypes.Path
 ): Signal.Signal<any, any?>
 	local concatedPath = table.concat(path, "/")
 	local valueInsertedSignal = self._valueInsertedSignals[player][concatedPath]
@@ -227,10 +230,10 @@ function PlayerDataService.GetValueInsertedSignal(
 	end
 end
 
-function PlayerDataService.Remove(self: PlayerDataService, player: Player, path: utils.Path, index: string): ()
+function PlayerDataService.Remove(self: PlayerDataService, player: Player, path: CustomTypes.Path, index: string): ()
 	local playerProfile = self:GetProfile(player)
 
-	local container = utils.getContainer(playerProfile.Data, path)
+	local container = getContainer(playerProfile.Data, path)
 
 	local concatedPath = table.concat(path, "/")
 
@@ -253,7 +256,7 @@ end
 function PlayerDataService.GetValueRemovedSignal(
 	self: PlayerDataService,
 	player: Player,
-	path: utils.Path
+	path: CustomTypes.Path
 ): Signal.Signal<any, any>
 	local concatedPath = table.concat(path, "/")
 	local valueRemovedSignal = self._valueRemovedSignals[player][concatedPath]
@@ -268,7 +271,7 @@ function PlayerDataService.GetValueRemovedSignal(
 	end
 end
 
-function PlayerDataService.Increment(self: PlayerDataService, player: Player, path: utils.Path, increment: number): ()
+function PlayerDataService.Increment(self: PlayerDataService, player: Player, path: CustomTypes.Path, increment: number): ()
 	local oldValue = self:Get(player, path)
 	local newValue = oldValue + increment
 
