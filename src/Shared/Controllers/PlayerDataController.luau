@@ -21,6 +21,10 @@ function PlayerDataController.Init(self: PlayerDataController): ()
 		local player = replica.Tags.Player
 		self._replicas[player] = replica
 
+		if player ~= localPlayer then
+			return
+		end
+
 		for concatedPath, valueChangedSignal in pairs(self._valueChangedSignals) do
 			local path = string.split(concatedPath, "/")
 			replica:OnSet(path, function(newValue, oldValue)
@@ -28,9 +32,11 @@ function PlayerDataController.Init(self: PlayerDataController): ()
 			end)
 		end
 
-		if player ~= localPlayer then
-			return
-		end
+		self._valueChangedSignalAdded:Connect(function(path, valueChangedSignal)
+			replica:OnSet(path, function(newValue, oldValue)
+				valueChangedSignal:Fire(newValue, oldValue)
+			end)
+		end)
 
 		replica:OnChange(function(action, path, value, index)
 			for concatedPath, valueInsertedSignal in pairs(self._valueInsertedSignals) do
@@ -119,6 +125,7 @@ function PlayerDataController.GetValueChangedSignal(
 		valueChangedSignal = Signal.new()
 
 		self._valueChangedSignals[concatedPath] = valueChangedSignal
+		self._valueChangedSignalAdded:Fire(path, valueChangedSignal)
 
 		return valueChangedSignal
 	end
@@ -163,6 +170,7 @@ type PlayerDataController = typeof(PlayerDataController) & {
 	_valueChangedSignals: { [string]: Signal.Signal<any, any> },
 	_valueInsertedSignals: { [string]: Signal.Signal<any, any?> },
 	_valueRemovedSignals: { [string]: Signal.Signal<any, any> },
+	_valueChangedSignalAdded: Signal.Signal<CustomTypes.Path, Signal.Signal<any, any>>,
 }
 
 return PlayerDataController :: PlayerDataController
