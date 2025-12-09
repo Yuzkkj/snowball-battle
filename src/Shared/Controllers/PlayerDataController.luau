@@ -16,6 +16,7 @@ function PlayerDataController.Init(self: PlayerDataController): ()
 	self._valueChangedSignals = {}
 	self._valueInsertedSignals = {}
 	self._valueRemovedSignals = {}
+	self._valueChangedSignalAdded = Signal.new()
 
 	Replica.OnNew("PlayerStore", function(replica)
 		local player = replica.Tags.Player
