@@ -12,8 +12,8 @@ local productsData = require(ReplicatedStorage.Modules.Game.ProductsData)
 local soundIds = require(ReplicatedStorage.Modules.Game.SoundIds)
 local packets = require(ReplicatedStorage.Modules.Game.Packets)
 
-local player = Players.LocalPlayer
-local purchaseGui = player.PlayerGui:WaitForChild("PurchaseGui")
+local localPlayer = Players.LocalPlayer
+local purchaseGui = localPlayer.PlayerGui:WaitForChild("PurchaseGui")
 local background = purchaseGui:WaitForChild("Background")
 local icon = background:WaitForChild("Icon")
 
@@ -28,13 +28,13 @@ function PurchaseController.Init(self: PurchaseController): ()
 end
 
 function PurchaseController.Start(self: PurchaseController): ()
-	self._gamepasses = PlayerDataController:Get({"Gamepasses"})
+	self._gamepasses = PlayerDataController:Get({ "Gamepasses" })
 
 	packets.AttemptPurchase.OnClientEvent:Connect(function(productId: number)
 		self:AttemptPurchase(productId)
 	end)
 
-	PlayerDataController:GetValueInsertedSignal({"Gamepasses"}):Connect(function(gamepass: number)
+	PlayerDataController:GetValueInsertedSignal({ "Gamepasses" }):Connect(function(gamepass: number)
 		local alreadyExists = table.find(self._gamepasses, gamepass)
 
 		if not alreadyExists then
@@ -44,13 +44,21 @@ function PurchaseController.Start(self: PurchaseController): ()
 		self.GamepassAdded:Fire(gamepass, productsData[gamepass].Name)
 	end)
 
-	MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(player, gamepassId, wasPurchased)
+	MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(player)
+		if player ~= localPlayer then
+			return
+		end
+
 		if self._isBusy then
 			self:_TogglePurchaseGui()
 		end
 	end)
 
-	MarketplaceService.PromptProductPurchaseFinished:Connect(function(player, productId, wasPurchased)
+	MarketplaceService.PromptProductPurchaseFinished:Connect(function(player)
+		if player ~= localPlayer then
+			return
+		end
+
 		if self._isBusy then
 			self:_TogglePurchaseGui()
 		end
@@ -140,9 +148,9 @@ function PurchaseController.AttemptPurchase(self: PurchaseController, productId:
 	end
 
 	if productData.Type == Enum.InfoType.GamePass then
-		MarketplaceService:PromptGamePassPurchase(player, productId)
+		MarketplaceService:PromptGamePassPurchase(localPlayer, productId)
 	elseif productData.Type == Enum.InfoType.Product then
-		MarketplaceService:PromptProductPurchase(player, productId)
+		MarketplaceService:PromptProductPurchase(localPlayer, productId)
 	else
 		return
 	end
