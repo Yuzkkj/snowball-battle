@@ -8,6 +8,10 @@ module.Template = {
 	Snowflakes = 0,
 	Wins = 0,
 	Eliminations = 0,
+	Settings = {
+		SoundVolume = 0.5,
+		MusicVolume = 0.5,
+	},
 }
 
 module.Token = Replica.Token("PlayerStore")
