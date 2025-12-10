@@ -10,5 +10,7 @@ return {
 	CanPurchase = Packet("CanPurchase", Packet.NumberF64):Response(Packet.Boolean8),
 	AttemptPurchase = Packet("AttemptPurchase", Packet.NumberF64),
 	GetCurrentMusic = Packet("GetCurrentMusic"):Response(Packet.NumberF64, Packet.NumberF64),
-	UpdateMusic = Packet("UpdateMusic", Packet.NumberF64)
+	UpdateMusic = Packet("UpdateMusic", Packet.NumberF64),
+	Ragdoll = Packet("Ragdoll", Packet.Boolean8),
+	Impulse = Packet("Impulse", Packet.Vector3F32, Packet.NumberU16),
 }
