@@ -119,20 +119,7 @@ function PlayerDataService.GetProfile(self: PlayerDataService, player: Player): 
 end
 
 function PlayerDataService.Get(self: PlayerDataService, player: Player, path: CustomTypes.Path): any
-	local playerProfile = self:GetProfile(player)
-
-	local length = #path
-	local last = path[length]
-	local value
-
-	local container = getContainer(playerProfile.Data, path)
-	value = container[last]
-
-	if not value then
-		error(`No index "{last}" in path "{table.concat(path, "/")}"`)
-	end
-
-	return value
+	return getContainer(self:GetProfile(player).Data, path)
 end
 
 function PlayerDataService.Set(self: PlayerDataService, player: Player, path: CustomTypes.Path, value: any): ()

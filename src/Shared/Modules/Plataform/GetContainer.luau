@@ -2,21 +2,22 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local CustomTypes = require(ReplicatedStorage.Modules.Core.CustomTypes)
 
-local function getContainer<T>(tbl: T, path: CustomTypes.Path): T | { any }
-	local container = tbl
-	for _, arg in pairs(path) do
-		if not container[arg] then
-			error(`No index "{arg}" in: container`)
+local function getContainer<T>(tbl: T, path: CustomTypes.Path): any
+	local current: any = tbl
+
+	for _, key in ipairs(path) do
+		if type(current) ~= "table" then
+			error(`Cannot index "{key}" because the parent is not a table.`)
 		end
 
-		if type(container[arg]) ~= "table" then
-			break
-		end
+		current = current[key]
 
-		container = container[arg]
+		if current == nil then
+			error(`No index "{key}" in path "{table.concat(path, "/")}"`)
+		end
 	end
 
-	return container
+	return current
 end
 
 return getContainer

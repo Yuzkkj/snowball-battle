@@ -98,20 +98,7 @@ function PlayerDataController.WaitForReplica(self: PlayerDataController, timeOut
 end
 
 function PlayerDataController.Get(self: PlayerDataController, path: CustomTypes.Path, player: Player?): any
-	local replica = self:WaitForReplica(10, player)
-
-	local length = #path
-	local last = path[length]
-	local value
-
-	local container = getContainer(replica.Data, path)
-	value = container[last]
-
-	if not value then
-		error(`No index "{last}" in path "{table.concat(path, "/")}"`)
-	end
-
-	return value
+	return getContainer(self:WaitForReplica(10, player).Data, path)
 end
 
 function PlayerDataController.GetValueChangedSignal(

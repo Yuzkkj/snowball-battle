@@ -12,6 +12,7 @@ module.Template = {
 		SoundVolume = 0.5,
 		MusicVolume = 0.5,
 	},
+	Gamepasses = {},
 }
 
 module.Token = Replica.Token("PlayerStore")
